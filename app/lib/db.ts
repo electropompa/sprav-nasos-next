@@ -1,15 +1,17 @@
 import mysql from 'mysql2/promise';
+import type { RowDataPacket } from 'mysql2';
+import "server-only";
 
-try {
-    const connection = await mysql.createConnection({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        database: process.env.DB_NAME,
-        port: 3306,
-        password: process.env.DB_PASSWORD,
-    });
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB_NAME,
+    port: 3306,
+    password: process.env.DB_PASSWORD,
+    connectionLimit: 10,
+});
 
-    await connection.end();
-} catch (error) {
-    console.error(error);
+export async function getTestRows() {
+    const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM `categories`');
+    return rows;
 }

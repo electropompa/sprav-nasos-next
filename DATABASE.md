@@ -29,10 +29,7 @@ CREATE TABLE products (
   stock_status ENUM('in_stock','on_order','out_of_stock') NOT NULL DEFAULT 'on_order',
   image_url VARCHAR(500) NULL,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
-  source VARCHAR(50) NULL,
-  external_id VARCHAR(190) NULL,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_source (source, external_id),
   KEY idx_cat_price (category_id, is_active, price),
   KEY idx_cat_brand (category_id, brand_id),
   FOREIGN KEY (category_id) REFERENCES categories(id),
@@ -72,7 +69,6 @@ CREATE TABLE attributes (
   code VARCHAR(100) NOT NULL UNIQUE,     -- 'max_head', 'power_kw', 'pump_type'
   name VARCHAR(255) NOT NULL,            -- 'Максимальный напор'
   type ENUM('number','enum','bool','text') NOT NULL,
-  unit VARCHAR(20) NULL,                 -- базовая единица: 'м', 'кВт', 'м³/ч'
   sort INT NOT NULL DEFAULT 0
 );
 ```
@@ -118,3 +114,10 @@ CREATE TABLE product_attribute_values (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 ```
+
+### Схема урлов
+/nasosy/                                        главный каталог
+/nasosy/vertikalnye-mnogostupenchatye/          тип насоса (листинг)
+/brendy/calpeda/                                производитель (листинг)
+/brendy/calpeda/mxv/                            серия (листинг)
+/nasos/calpeda-mxv-100-6501/                    карточка (единственный адрес)
